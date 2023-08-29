@@ -11,4 +11,4 @@ setattr(settings, 'HASHID_FIELD_ALLOW_INT_LOOKUP', getattr(settings, 'HASHID_FIE
 setattr(settings, 'HASHID_FIELD_LOOKUP_EXCEPTION', getattr(settings, 'HASHID_FIELD_LOOKUP_EXCEPTION', False))
 setattr(settings, 'HASHID_FIELD_ENABLE_HASHID_OBJECT', getattr(settings, 'HASHID_FIELD_ENABLE_HASHID_OBJECT', True))
 setattr(settings, 'HASHID_FIELD_ENABLE_DESCRIPTOR', getattr(settings, 'HASHID_FIELD_ENABLE_DESCRIPTOR', True))
-
+setattr(settings, 'HASHID_LIBRARY_USED', getattr(settings, 'HASHID_LIBRARY_USED', 'hashids'))
