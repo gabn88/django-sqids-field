@@ -1,6 +1,6 @@
-from hashids import Hashids
 
-from .hashid import Hashid
+
+from .hashid import Hashid, Hashids
 
 
 class HashidDescriptor(object):

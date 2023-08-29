@@ -1,7 +1,6 @@
 from django.test import TestCase
-from hashids import Hashids
+from hashid_field.hashid import Hashid, Hashids
 
-from hashid_field import Hashid
 from hashid_field.descriptor import HashidDescriptor
 
 salt = "abcd"

@@ -15,8 +15,7 @@ def no_cache():
 
 @profile(precision=8)
 def with_cache():
-    from hashid_field.hashid import Hashid
-    from hashids import Hashids
+    from hashid_field.hashid import Hashid, Hashids
     hashids = Hashids(salt="asdf", min_length=7)
     instances = [Hashid(i, hashids=hashids) for i in range(1, 10_000)]
     return instances

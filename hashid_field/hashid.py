@@ -1,6 +1,9 @@
 from functools import total_ordering
 
-from hashids import Hashids
+if settings.HASHID_LIBRARY_USED == 'hashids':
+    from hashids import Hashids
+elif settings.HASHID_LIBRARY_USED == 'sqids':
+    from sqids import Sqids as Hashids
 
 
 def _is_uint(candidate):

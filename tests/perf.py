@@ -21,8 +21,7 @@ def no_cache():
 
 def with_cache():
     setup = dedent('''
-        from hashid_field.hashid import Hashid
-        from hashids import Hashids
+        from hashid_field.hashid import Hashid, Hashids
         hashids=Hashids(salt="asdf", min_length=7)
     ''')
     stmt = dedent('''
@@ -36,8 +35,7 @@ def with_cache():
 def hashid_decode():
     # Test the encode/decode performance of Hashid between different commits.
     setup = dedent('''
-        from hashid_field.hashid import Hashid
-        from hashids import Hashids
+        from hashid_field.hashid import Hashid, Hashids
         hashids=Hashids(salt="asdf", min_length=7)
     ''')
     stmt = dedent('''
