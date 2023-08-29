@@ -4,7 +4,7 @@ from django.db.models.lookups import Lookup, GreaterThan, GreaterThanOrEqual, Le
 from django.utils.datastructures import OrderedSet
 from django.core.exceptions import EmptyResultSet
 
-from .hashid import Hashid
+from .sqid import Sqid
 from .conf import settings
 
 
@@ -18,24 +18,24 @@ def _is_int_representation(number):
         return True
 
 
-def get_id_for_hashid_field(field, value):
-    if isinstance(value, Hashid):
+def get_id_for_sqid_field(field, value):
+    if isinstance(value, Sqid):
         return value.id
     try:
-        hashid = field.get_hashid(value)
+        sqid = field.get_sqid(value)
     except ValueError:
         raise ValueError(field.error_messages['invalid'] % {'value': value})
     if isinstance(value, int) and not field.allow_int_lookup:
-        raise ValueError(field.error_messages['invalid_hashid'] % {'value': value})
+        raise ValueError(field.error_messages['invalid_sqid'] % {'value': value})
     if isinstance(value, str) and not field.allow_int_lookup:
         # Make sure int lookups are not allowed, even if prefixed, unless the
-        # given value is actually a hashid made up entirely of numbers.
+        # given value is actually a sqid made up entirely of numbers.
         if not value.startswith(field.prefix):
-            raise ValueError(field.error_messages['invalid_hashid'] % {'value': value})
+            raise ValueError(field.error_messages['invalid_sqid'] % {'value': value})
         without_prefix = value[len(field.prefix):]
-        if _is_int_representation(without_prefix) and without_prefix != hashid.hashid:
-            raise ValueError(field.error_messages['invalid_hashid'] % {'value': value})
-    return hashid.id
+        if _is_int_representation(without_prefix) and without_prefix != sqid.sqid:
+            raise ValueError(field.error_messages['invalid_sqid'] % {'value': value})
+    return sqid.id
 
 
 # Most of this code is derived or copied from Django. (django/db/models/lookups.py)
@@ -43,7 +43,7 @@ def get_id_for_hashid_field(field, value):
 # Django is Copyright (c) Django Software Foundation and individual contributors.
 # Please see https://github.com/django/django/blob/master/LICENSE
 
-class HashidFieldGetDbPrepValueMixin:
+class SqidFieldGetDbPrepValueMixin:
     get_db_prep_lookup_value_is_iterable = False
 
     def get_db_prep_lookup(self, value, connection):
@@ -57,9 +57,9 @@ class HashidFieldGetDbPrepValueMixin:
             lookup_ids = []
             for val in value:
                 try:
-                    lookup_id = get_id_for_hashid_field(field, val)
+                    lookup_id = get_id_for_sqid_field(field, val)
                 except ValueError:
-                    if settings.HASHID_FIELD_LOOKUP_EXCEPTION:
+                    if settings.SQID_FIELD_LOOKUP_EXCEPTION:
                         raise
                     # Ignore this value
                     pass
@@ -70,15 +70,15 @@ class HashidFieldGetDbPrepValueMixin:
             return '%s', lookup_ids
         else:
             try:
-                lookup_id = get_id_for_hashid_field(field, value)
+                lookup_id = get_id_for_sqid_field(field, value)
             except ValueError:
-                if settings.HASHID_FIELD_LOOKUP_EXCEPTION:
+                if settings.SQID_FIELD_LOOKUP_EXCEPTION:
                     raise
                 raise EmptyResultSet
             return '%s', [lookup_id]
 
 
-class HashidExactLookup(HashidFieldGetDbPrepValueMixin, Lookup):
+class SqidExactLookup(SqidFieldGetDbPrepValueMixin, Lookup):
     prepare_rhs = False
 
     def as_sql(self, compiler, connection):
@@ -92,7 +92,7 @@ class HashidExactLookup(HashidFieldGetDbPrepValueMixin, Lookup):
         return "= %s" % rhs
 
 
-class HashidIterableLookup(HashidExactLookup):
+class SqidIterableLookup(SqidExactLookup):
     # This is an amalgamation of Django's FieldGetDbPrepValueIterableMixin and In lookup to allow support of both
     # iterables (lists, tuples) and subqueries.
     get_db_prep_lookup_value_is_iterable = True
@@ -163,17 +163,17 @@ class HashidIterableLookup(HashidExactLookup):
         return 'IN %s' % rhs
 
 
-class HashidGreaterThan(HashidFieldGetDbPrepValueMixin, GreaterThan):
+class SqidGreaterThan(SqidFieldGetDbPrepValueMixin, GreaterThan):
     prepare_rhs = False
 
 
-class HashidGreaterThanOrEqual(HashidFieldGetDbPrepValueMixin, GreaterThanOrEqual):
+class SqidGreaterThanOrEqual(SqidFieldGetDbPrepValueMixin, GreaterThanOrEqual):
     prepare_rhs = False
 
 
-class HashidLessThan(HashidFieldGetDbPrepValueMixin, LessThan):
+class SqidLessThan(SqidFieldGetDbPrepValueMixin, LessThan):
     prepare_rhs = False
 
 
-class HashidLessThanOrEqual(HashidFieldGetDbPrepValueMixin, LessThanOrEqual):
+class SqidLessThanOrEqual(SqidFieldGetDbPrepValueMixin, LessThanOrEqual):
     prepare_rhs = False

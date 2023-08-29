@@ -1,16 +1,16 @@
-from hashids import Hashids
+from hashids import Sqids
 
-from .hashid import Hashid
+from .hashid import Sqid
 
 
-class HashidDescriptor(object):
+class SqidDescriptor(object):
     def __init__(self, field_name, salt, min_length, alphabet, prefix="", hashids=None, enable_hashid_object=True):
         self.field_name = field_name
         self.salt = salt
         self.min_length = min_length
         self.alphabet = alphabet
         self.prefix = prefix
-        self.hashids = hashids or Hashids(salt=self.salt, min_length=self.min_length, alphabet=self.alphabet)
+        self.hashids = hashids or Sqids(salt=self.salt, min_length=self.min_length, alphabet=self.alphabet)
         self.enable_hashid_object = enable_hashid_object
 
     def __get__(self, instance, owner=None):
@@ -27,14 +27,14 @@ class HashidDescriptor(object):
     def _set_value(self, instance, name, value, enable_hashid_object):
         if value is None:
             instance.__dict__[name] = value
-        if isinstance(value, Hashid):
+        if isinstance(value, Sqid):
             if enable_hashid_object:
                 instance.__dict__[name] = value
             else:
                 instance.__dict__[name] = str(value)
         else:
             try:
-                h = Hashid(value, salt=self.salt, min_length=self.min_length, alphabet=self.alphabet,
+                h = Sqid(value, salt=self.salt, min_length=self.min_length, alphabet=self.alphabet,
                            prefix=self.prefix, hashids=self.hashids)
                 if enable_hashid_object:
                     instance.__dict__[name] = h
