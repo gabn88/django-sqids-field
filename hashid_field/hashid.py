@@ -6,7 +6,8 @@ if settings.HASHID_LIBRARY_USED == 'hashids':
     default_alphabet = Hashids.ALPHABET
 elif settings.HASHID_LIBRARY_USED == 'sqids':
     from sqids import Sqids as Hashids
-    default_alphabet = Hashids.DEFAULT_ALPHABET
+    from sqids import DEFAULT_ALPHABET
+    default_alphabet = DEFAULT_ALPHABET
 
 
 def _is_uint(candidate):
