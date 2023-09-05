@@ -1,5 +1,5 @@
 from functools import total_ordering
-from .conf impor settings
+from .conf import settings
 
 if settings.HASHID_LIBRARY_USED == 'hashids':
     from hashids import Hashids
