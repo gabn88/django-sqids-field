@@ -3,8 +3,10 @@ from .conf import settings
 
 if settings.HASHID_LIBRARY_USED == 'hashids':
     from hashids import Hashids
+    default_alphabet = Hashids.ALPHABET
 elif settings.HASHID_LIBRARY_USED == 'sqids':
     from sqids import Sqids as Hashids
+    default_alphabet = Sqids.DEFAULT_ALPHABET
 
 
 def _is_uint(candidate):
@@ -19,7 +21,7 @@ def _is_str(candidate):
 
 @total_ordering
 class Hashid(object):
-    def __init__(self, value, salt="", min_length=0, alphabet=Hashids.ALPHABET, prefix="", hashids=None):
+    def __init__(self, value, salt="", min_length=0, alphabet=default_alphabet, prefix="", hashids=None):
         self._salt = salt
         self._min_length = min_length
         self._alphabet = alphabet
